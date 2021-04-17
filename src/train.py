@@ -7,17 +7,22 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, CSVLogger
 
-def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, epochs, verbose, save_path, model_name='model.h5', batch_size=32,
-                        early_stopping_monitor='val_categorical_accuracy', early_stopping_mode='max', early_stopping_patience=30,
-                        reduce_lr_monitor='val_categorical_accuracy', reduce_lr_mode='max', reduce_lr_patience=10, reducelr_factor=0.1):
 
-    early_stopping = EarlyStopping(monitor=early_stopping_monitor, mode=early_stopping_mode, patience=early_stopping_patience, restore_best_weights=True, verbose=1)
-    reduce_lr = ReduceLROnPlateau(monitor=reduce_lr_monitor, mode=reduce_lr_mode, factor=reducelr_factor, patience=reduce_lr_patience, verbose=1)
+def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, epochs, verbose, save_path,
+                         model_name='model.h5', batch_size=32, early_stopping_monitor='val_categorical_accuracy',
+                         early_stopping_mode='max', early_stopping_patience=30,
+                         reduce_lr_monitor='val_categorical_accuracy', reduce_lr_mode='max', reduce_lr_patience=10,
+                         reducelr_factor=0.1):
+    early_stopping = EarlyStopping(monitor=early_stopping_monitor, mode=early_stopping_mode,
+                                   patience=early_stopping_patience, restore_best_weights=True, verbose=1)
+    reduce_lr = ReduceLROnPlateau(monitor=reduce_lr_monitor, mode=reduce_lr_mode, factor=reducelr_factor,
+                                  patience=reduce_lr_patience, verbose=1)
     csv_logger = CSVLogger(os.path.join(save_path, 'training.csv'))
 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-    hist = model.fit(x=train_data, validation_data=val_data, epochs=epochs, verbose=verbose, callbacks=[early_stopping, reduce_lr, csv_logger], batch_size=batch_size)
-     
+    hist = model.fit(x=train_data, validation_data=val_data, epochs=epochs, verbose=verbose,
+                     callbacks=[early_stopping, reduce_lr, csv_logger], batch_size=batch_size)
+
     predicted_values = model.predict(val_data)
     predicted_values = np.argmax(predicted_values, axis=-1)
 
@@ -29,8 +34,8 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     plt.clf()
     sns.heatmap(classif_mat_df, annot=True, fmt='d', cbar=False)
     confusion_matrix_heatmap_save_path = os.path.join(save_path, 'confusion_matrix.png')
-    
-    save_confusion_matrix_path = os.path.join(save_path, 'confusion_matrix.png') 
+
+    save_confusion_matrix_path = os.path.join(save_path, 'confusion_matrix.png')
     plt.savefig(save_confusion_matrix_path)
 
     # kreiranje i snimanje grafika u kome se porede gubici (loss) trening opservacija naspram validacionih opservacija
@@ -75,7 +80,6 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     save_precision_plot = os.path.join(save_path, 'train_precision_vs_val_precision.png')
     plt.savefig(save_precision_plot)
 
-
     # snimanje izvestaja (classification report) i tacnosti (accuracy)
 
     class_report = classification_report(val_data.classes, predicted_values)
@@ -91,7 +95,7 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     # snimanje modela
 
     save_model_path = os.path.join(save_path, model_name)
-    model.save(save_model_path) # include_optimizer=False
+    model.save(save_model_path)  # include_optimizer=False
 
     # snimanje summary-a
 

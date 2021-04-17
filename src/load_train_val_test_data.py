@@ -1,4 +1,3 @@
-import os
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from .settings import classes, batch_size, train_path, val_path, test_path, preprocessing_algorithm, image_size
 
