@@ -16,7 +16,6 @@ if not os.path.isdir(model_save_path):
     os.mkdir(model_save_path)
 
 backbone = EfficientNetB6()
-backbone.summary()
 
 input_layer = backbone.layers[0].input
 x = backbone.get_layer('top_dropout').output
@@ -31,4 +30,4 @@ for layer in model.layers[:-1]:
 train_neural_network(model=model, train_data=train_data, val_data=val_data, batch_size=batch_size,
                     optimizer=Adam(learning_rate=learning_rate), loss=categorical_crossentropy, 
                     metrics=[categorical_accuracy, Precision(class_id=0), Recall(class_id=0)], epochs=1000, verbose=2, 
-                    save_path=model_save_path, early_stopping_monitor='val_precision')
+                    save_path=model_save_path)

@@ -8,8 +8,8 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, CSVLogger
 
 def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, epochs, verbose, save_path, model_name='model.h5', batch_size=32,
-                        early_stopping_monitor='val_categorical_accuracy', early_stopping_mode='max', early_stopping_patience=30,
-                        reduce_lr_monitor='val_categorical_accuracy', reduce_lr_mode='max', reduce_lr_patience=10, reducelr_factor=0.1):
+                        early_stopping_monitor='val_precision', early_stopping_mode='max', early_stopping_patience=30,
+                        reduce_lr_monitor='val_precision', reduce_lr_mode='max', reduce_lr_patience=10, reducelr_factor=0.1):
 
     early_stopping = EarlyStopping(monitor=early_stopping_monitor, mode=early_stopping_mode, patience=early_stopping_patience, restore_best_weights=True, verbose=1)
     reduce_lr = ReduceLROnPlateau(monitor=reduce_lr_monitor, mode=reduce_lr_mode, factor=reducelr_factor, patience=reduce_lr_patience, verbose=1)
@@ -50,11 +50,9 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     # kreiranje i snimanje grafika poredjenja tacnosti trening opservacija naspram validacionih opservacija (accuracy)
 
     plt.clf()
-
-    plt.clf()
     plt.plot(hist.history['categorical_accuracy'], label='train accuracy')
     plt.plot(hist.history['val_categorical_accuracy'], label='validation accuracy')
-    plt.legend(loc='right')
+    plt.legend(loc='lower right')
     plt.title('Train accuracy vs validation accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
@@ -67,14 +65,13 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     plt.clf()
     plt.plot(hist.history['precision'], label='train precision')
     plt.plot(hist.history['val_precision'], label='validation precision')
-    plt.legend(loc='upper right')
+    plt.legend(loc='lower right')
     plt.title('Train precision vs validation precision')
     plt.xlabel('Epoch')
     plt.ylabel('Precision')
 
     save_precision_plot = os.path.join(save_path, 'train_precision_vs_val_precision.png')
     plt.savefig(save_precision_plot)
-
 
     # snimanje izvestaja (classification report) i tacnosti (accuracy)
 

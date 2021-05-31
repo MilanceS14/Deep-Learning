@@ -1,5 +1,4 @@
 import os
-import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Conv2D, BatchNormalization, Flatten
 from tensorflow.keras.optimizers import Adam
@@ -7,7 +6,7 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import categorical_accuracy, Precision, Recall
 from src.train import train_neural_network
 from src.load_train_val_test_data import train_data, val_data
-from src.settings import trained_models_path, batch_size, image_size, learning_rate
+from src.settings import trained_models_path, batch_size, learning_rate
 
 
 # physical_devices = tf.config.list_physical_devices('GPU')
@@ -35,5 +34,5 @@ model = Sequential([
 train_neural_network(model=model, train_data=train_data, val_data=val_data, batch_size=batch_size,
                     optimizer=Adam(learning_rate=learning_rate), loss=categorical_crossentropy, 
                     metrics=[categorical_accuracy, Precision(class_id=0), Recall(class_id=0)], epochs=1000, verbose=2, 
-                    save_path=model_save_path, early_stopping_monitor='val_precision')
+                    save_path=model_save_path)
 
