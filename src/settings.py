@@ -23,5 +23,5 @@ learning_rate = 1e-4
 # preprocessing_algorithm = tf.keras.applications.resnet50.preprocess_input
 # preprocessing_algorithm = tf.keras.applications.resnet_v2.preprocess_input
 # preprocessing_algorithm = tf.keras.applications.efficientnet.preprocess_input
-preprocessing_algorithm = tf.keras.applications.vgg16.preprocess_input
-# preprocessing_algorithm = tf.keras.applications.mobilenet_v2.preprocess_input
+# preprocessing_algorithm = tf.keras.applications.vgg16.preprocess_input
+preprocessing_algorithm = tf.keras.applications.mobilenet_v2.preprocess_input

@@ -24,6 +24,7 @@ model = Sequential([
     Conv2D(filters=256, kernel_size=(3, 3), activation='relu', padding='same'),
     BatchNormalization(),
     Conv2D(filters=512, kernel_size=(3, 3), activation='relu', padding='same'),
+    BatchNormalization(),
     Flatten(),
     Dense(units=2, activation='softmax')
 ])
