@@ -8,12 +8,6 @@ from src.train import train_neural_network
 from src.load_train_val_test_data import train_data, val_data
 from src.settings import trained_models_path, batch_size, learning_rate
 
-
-# physical_devices = tf.config.list_physical_devices('GPU')
-# tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
 # putanja na koju treba snimiti model nakon obucavanja
 
 model_save_path = os.path.join(trained_models_path, '2_conv_layers_filters_32_64_kernel_3_3_stride_1_mobile_net_v2_preprocessing_batch_norm_max_pool')

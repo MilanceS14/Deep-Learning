@@ -9,8 +9,6 @@ from src.train import train_neural_network
 from src.load_train_val_test_data import train_data, val_data
 from src.settings import trained_models_path, batch_size, learning_rate
 
-# os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-
 # putanja na koju treba snimiti model nakon obucavanja
 
 model_save_path = os.path.join(trained_models_path, 'mobilenet_v2_batch_32_only_last_layer_trainable')
