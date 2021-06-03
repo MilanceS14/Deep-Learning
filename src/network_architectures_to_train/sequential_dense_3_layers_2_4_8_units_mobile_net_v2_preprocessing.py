@@ -10,7 +10,7 @@ from src.settings import trained_models_path, batch_size, image_size, learning_r
 
 # putanja na koju treba snimiti model nakon obucavanja
 
-model_save_path = os.path.join(trained_models_path, 'sequential_dense_2_layers_2_4_8_units_mobile_net_v2_preprocessing')
+model_save_path = os.path.join(trained_models_path, 'sequential_dense_3_layers_2_4_8_units_mobile_net_v2_preprocessing')
 if not os.path.isdir(model_save_path):
     os.mkdir(model_save_path)
 
