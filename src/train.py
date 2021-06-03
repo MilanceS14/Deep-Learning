@@ -28,7 +28,6 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
 
     plt.clf()
     sns.heatmap(classif_mat_df, annot=True, fmt='d', cbar=False)
-    confusion_matrix_heatmap_save_path = os.path.join(save_path, 'confusion_matrix.png')
     
     save_confusion_matrix_path = os.path.join(save_path, 'confusion_matrix.png') 
     plt.savefig(save_confusion_matrix_path)
