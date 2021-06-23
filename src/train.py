@@ -6,6 +6,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, CSVLogger
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, epochs, verbose, save_path, model_name='model.h5', batch_size=32,
                         early_stopping_monitor='val_precision', early_stopping_mode='max', early_stopping_patience=30,
@@ -20,20 +22,6 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     hist = model.fit(x=train_data, validation_data=val_data, epochs=epochs, verbose=verbose,
                      callbacks=[early_stopping, reduce_lr, csv_logger], batch_size=batch_size)
-
-    predicted_values = model.predict(val_data)
-    predicted_values = np.argmax(predicted_values, axis=-1)
-
-    classif_mat = confusion_matrix(val_data.classes, predicted_values)
-    classif_mat_df = pd.DataFrame(classif_mat, index=['NORMAL', 'PNEUMONIA'], columns=['NORMAL', 'PNEUMONIA'])
-
-    # kreiranje i snimanje matrice konfuzije
-
-    plt.clf()
-    sns.heatmap(classif_mat_df, annot=True, fmt='d', cbar=False)
-    
-    save_confusion_matrix_path = os.path.join(save_path, 'confusion_matrix.png') 
-    plt.savefig(save_confusion_matrix_path)
 
     # kreiranje i snimanje grafika u kome se porede gubici (loss) trening opservacija naspram validacionih opservacija
 
@@ -75,18 +63,6 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
     save_precision_plot = os.path.join(save_path, 'train_precision_vs_val_precision.png')
     plt.savefig(save_precision_plot)
 
-    # snimanje izvestaja (classification report) i tacnosti (accuracy)
-
-    class_report = classification_report(val_data.classes, predicted_values)
-    accuracy = accuracy_score(val_data.classes, predicted_values)
-
-    classification_report_and_accuracy_path = os.path.join(save_path, 'classification_report_and_accuracy_path.txt')
-
-    with open(classification_report_and_accuracy_path, 'w') as f:
-        f.write(class_report)
-        f.write('\n \n \n')
-        f.write(f'accuracy: {accuracy}')
-
     # snimanje modela
 
     save_model_path = os.path.join(save_path, model_name)
@@ -100,3 +76,39 @@ def train_neural_network(model, train_data, val_data, optimizer, loss, metrics, 
         sys.stdout = f
         model.summary()
         sys.stdout = stdout
+
+def test_trained_model(model_path, save_path, data_path, preprocess_input, classes=['NORMAL', 'PNEUMONIA'], target_size=(224, 224), batch_size=32, shuffle=False):
+
+    data_batch = ImageDataGenerator(preprocessing_function=preprocess_input)\
+                .flow_from_directory(directory=data_path, classes=classes, target_size=target_size, batch_size=batch_size, shuffle=shuffle)
+
+    if not os.path.isdir(save_path):
+        
+        os.mkdir(save_path)
+        model = load_model(model_path)
+        print('Model loaded')
+        predicted_values = model.predict(data_batch)
+        predicted_values = np.argmax(predicted_values, axis=-1)
+
+        classif_mat = confusion_matrix(data_batch.classes, predicted_values)
+        classif_mat_df = pd.DataFrame(classif_mat, index=['NORMAL', 'PNEUMONIA'], columns=['NORMAL', 'PNEUMONIA'])
+
+        # kreiranje i snimanje matrice konfuzije
+
+        plt.clf()
+        sns.heatmap(classif_mat_df, annot=True, fmt='d', cbar=False)
+        
+        save_confusion_matrix_path = os.path.join(save_path, 'confusion_matrix.png') 
+        plt.savefig(save_confusion_matrix_path)
+
+        # snimanje izvestaja (classification report) i tacnosti (accuracy)
+
+        class_report = classification_report(data_batch.classes, predicted_values)
+        accuracy = accuracy_score(data_batch.classes, predicted_values)
+
+        classification_report_and_accuracy_path = os.path.join(save_path, 'classification_report_and_accuracy_path.txt')
+
+        with open(classification_report_and_accuracy_path, 'w') as f:
+            f.write(class_report)
+            f.write('\n \n \n')
+            f.write(f'accuracy: {accuracy}')
